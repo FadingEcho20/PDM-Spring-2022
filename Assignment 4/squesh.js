@@ -103,6 +103,8 @@ function mainMenu() {
   rect(910, 450, 600, 100, 20);
   textSize(100);
   text('Start Game', 950, 540);
+  textSize(50);
+  text('Click the bugs to score points!', 400, 400);
 }
 
 function gameOverMenu() {
