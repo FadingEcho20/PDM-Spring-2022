@@ -80,7 +80,7 @@ class Bug {
     this.bugOpacity = 255;
   }
 
-  gameControl() { //all statements must use a render, move, and think
+  gameControl() { //all statements must use a render, move (except 0 and 1)
     if(this.bugStatus == 0) {
       this.renderDead(this.bugStatus);
   
@@ -90,10 +90,7 @@ class Bug {
     }
     else if(this.bugStatus == 1) {
       this.renderLive();
-
-      if(this.timeCounter >= THINK_DELAY)
-        this.bugStatus = random(directions);
-      this.timeCounter += deltaTime;
+      this.think();
     }
     else if(this.bugStatus == 3) {
       this.renderLive(this.bugStatus);
@@ -110,7 +107,6 @@ class Bug {
     else if(this.bugStatus == 6) {
       this.renderLive(this.bugStatus);
       this.move(this.bugStatus);
-
     }
   }
 
@@ -194,7 +190,9 @@ class Bug {
   }
 
   think() {
-    
+    if(this.timeCounter >= THINK_DELAY)
+      this.bugStatus = random(directions);
+    this.timeCounter += deltaTime;
   }
 
   renderLive() {
