@@ -24,9 +24,9 @@ let f2;
 let f3;
 let f4;
 let dead;
-// let currentPopulation; // current number of bugs on screen
 let gameTimer; 
 let numberKilled;
+let gameStatus; // status codes: [0 - initialize][1 - game running][2 - game over]
 let CLICK_PRECISION; // number of pixels from the center of the bug to register click on bug
 let RESPAWN_DELAY; // value in milliseconds for bug to respawn
 let THINK_DELAY; // time before bug decides to move a different direction
@@ -44,6 +44,7 @@ function setup() {
   dead = loadImage('assets/die.png');
   gameTimer = 0;
   numberKilled = 0;
+  gameStatus = 0;
   RESPAWN_DELAY = 3000;
   THINK_DELAY = 500;
   CLICK_PRECISION = 50;
@@ -59,42 +60,61 @@ function setup() {
 
 function draw() {
   background(255);
-  if(gameTimer < 30000) {
-    if(gameTimer < 20000) {
-      if(gameTimer < 10000) {
-        for(i = 0; i < 5; i++)
-        {
-          bugs[i].gameControl();
+  if (gameStatus == 0)
+    mainMenu();
+  else if(gameStatus == 1) {
+    if(gameTimer < 30000) {
+      if(gameTimer < 20000) {
+        if(gameTimer < 10000) {
+          for(i = 0; i < 5; i++)
+          {
+            bugs[i].gameControl();
+          }
+        }
+        else {
+          for(i = 0; i < 10; i++)
+          {
+            bugs[i].gameControl();
+          }
         }
       }
       else {
-        for(i = 0; i < 10; i++)
+        for(i = 0; i < 20; i++)
         {
           bugs[i].gameControl();
         }
       }
     }
-    else {
-      for(i = 0; i < 20; i++)
-      {
-        bugs[i].gameControl();
-      }
-    }
-  }
-
-  textSize(32);
-  text(numberKilled, 1800, 30);
   
-  gameTimer += deltaTime;
+    textSize(32);
+    text(numberKilled, 1800, 30);
+    
+    gameTimer += deltaTime;
+  }
+}
+
+function mainMenu() {
+  textSize(300);
+  text('Squesh', 100, 300);
+  rect(910, 450, 600, 100, 20);
+  textSize(100);
+  text('Start Game', 950, 540);
 }
 
 function mousePressed() {
   print('Mouse was pressed');
-  for(i = 0; i < 20; i++)
-  {
-    if(mouseX > (bugs[i].posX - CLICK_PRECISION) && mouseX < (bugs[i].posX + CLICK_PRECISION))
-      if(mouseY > (bugs[i].posY - CLICK_PRECISION) && mouseY < (bugs[i].posY + CLICK_PRECISION))
-        bugs[i].kill();   
+  if(gameStatus == 0) {
+    if(mouseX > 910 && mouseX < 1510)
+      if(mouseY > 450 && mouseY < 550)
+        gameStatus = 1;
+  }
+  else if(gameStatus == 1) {
+    for(i = 0; i < 20; i++)
+    {
+      if(mouseX > (bugs[i].posX - CLICK_PRECISION) && mouseX < (bugs[i].posX + CLICK_PRECISION))
+        if(mouseY > (bugs[i].posY - CLICK_PRECISION) && mouseY < (bugs[i].posY + CLICK_PRECISION))
+          bugs[i].kill();   
+    }
   }
 }
 
