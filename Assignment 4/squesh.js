@@ -58,9 +58,25 @@ function setup() {
 function draw() {
   background(255);
   if(gameTimer < 30000) {
-    for(i = 0; i < 5; i++)
-    {
-      bugs[i].gameControl();
+    if(gameTimer < 20000) {
+      if(gameTimer < 10000) {
+        for(i = 0; i < 5; i++)
+        {
+          bugs[i].gameControl();
+        }
+      }
+      else {
+        for(i = 0; i < 10; i++)
+        {
+          bugs[i].gameControl();
+        }
+      }
+    }
+    else {
+      for(i = 0; i < 20; i++)
+      {
+        bugs[i].gameControl();
+      }
     }
   }
   
