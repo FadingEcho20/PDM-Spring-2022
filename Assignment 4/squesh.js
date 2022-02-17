@@ -28,10 +28,11 @@ let dead;
 let gameTimer; 
 let CLICK_PRECISION; // number of pixels from the center of the bug to register click on bug
 let RESPAWN_DELAY; // value in milliseconds for bug to respawn
-let BUG_MOVE_SPEED;
 let THINK_DELAY; // time before bug decides to move a different direction
 let ACTION_DURATION; // time bug performs current instruction
 let FADE_RATE; // rate at which bug fades after being killed 
+let BUG_MIN_SPEED;
+let BUG_MAX_SPEED;
 
 function setup() {
   createCanvas(1920, 1080);
@@ -44,9 +45,10 @@ function setup() {
   RESPAWN_DELAY = 3000;
   THINK_DELAY = 500;
   CLICK_PRECISION = 50;
-  BUG_MOVE_SPEED = 2;
   ACTION_DURATION = 1500;
   FADE_RATE = 1;
+  BUG_MIN_SPEED = 1;
+  BUG_MAX_SPEED = 5;
   for(i = 0; i < 20; i++)
   {
     bugs[i] = new Bug(random(200,1720), random(200,880));
@@ -84,6 +86,7 @@ class Bug {
     this.beginCommandFrame;
     this.timeCounter = 0; 
     this.bugOpacity = 255;
+    this.bugMoveSpeed = 2; 
   }
 
   gameControl() { //all statements must use a render, move (except 0 and 1)
@@ -124,7 +127,7 @@ class Bug {
         }
   
         if(this.posY >= 100) {    
-          this.posY -= BUG_MOVE_SPEED;
+          this.posY -= this.bugMoveSpeed;
         }
         else
           this.bugStatus = 1;
@@ -142,7 +145,7 @@ class Bug {
         }
   
         if(this.posX >= 100) {    
-          this.posX -= BUG_MOVE_SPEED;
+          this.posX -= this.bugMoveSpeed;
         }
         else
           this.bugStatus = 1;
@@ -160,7 +163,7 @@ class Bug {
         }
   
         if(this.posY <= 980) {    
-          this.posY += BUG_MOVE_SPEED;
+          this.posY += this.bugMoveSpeed;
         }
         else
           this.bugStatus = 1;
@@ -178,7 +181,7 @@ class Bug {
         }
   
         if(this.posX <= 1820) {    
-          this.posX += BUG_MOVE_SPEED;
+          this.posX += this.bugMoveSpeed;
         }
         else
           this.bugStatus = 1;
@@ -199,6 +202,7 @@ class Bug {
     if(this.timeCounter >= THINK_DELAY)
       this.bugStatus = random(directions);
     this.timeCounter += deltaTime;
+    this.bugMoveSpeed = random(BUG_MIN_SPEED, BUG_MAX_SPEED);
   }
 
   renderLive() {
