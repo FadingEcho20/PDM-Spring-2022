@@ -26,6 +26,7 @@ let f4;
 let dead;
 // let currentPopulation; // current number of bugs on screen
 let gameTimer; 
+let numberKilled;
 let CLICK_PRECISION; // number of pixels from the center of the bug to register click on bug
 let RESPAWN_DELAY; // value in milliseconds for bug to respawn
 let THINK_DELAY; // time before bug decides to move a different direction
@@ -42,6 +43,7 @@ function setup() {
   f4 = loadImage('assets/f4.png');
   dead = loadImage('assets/die.png');
   gameTimer = 0;
+  numberKilled = 0;
   RESPAWN_DELAY = 3000;
   THINK_DELAY = 500;
   CLICK_PRECISION = 50;
@@ -79,6 +81,9 @@ function draw() {
       }
     }
   }
+
+  textSize(32);
+  text(numberKilled, 1800, 30);
   
   gameTimer += deltaTime;
 }
@@ -252,5 +257,6 @@ class Bug {
     this.beginCommandFrame = frameCount;
     this.bugStatus = 0;
     this.timeCounter = 0;
+    numberKilled ++;
   }
 }
