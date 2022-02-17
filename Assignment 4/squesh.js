@@ -24,9 +24,10 @@ let f2;
 let f3;
 let f4;
 let dead;
+// let currentPopulation; // current number of bugs on screen
+let gameTimer; 
 let CLICK_PRECISION; // number of pixels from the center of the bug to register click on bug
 let RESPAWN_DELAY; // value in milliseconds for bug to respawn
-let currentPopulation; // current number of bugs on screen
 let BUG_MOVE_SPEED;
 let THINK_DELAY; // time before bug decides to move a different direction
 let ACTION_DURATION; // time bug performs current instruction
@@ -39,6 +40,7 @@ function setup() {
   f3 = loadImage('assets/f3.png');
   f4 = loadImage('assets/f4.png');
   dead = loadImage('assets/die.png');
+  gameTimer = 0;
   RESPAWN_DELAY = 3000;
   THINK_DELAY = 500;
   CLICK_PRECISION = 50;
@@ -53,10 +55,14 @@ function setup() {
 
 function draw() {
   background(255);
-  for(i = 0; i < 20; i++)
-  {
-    bugs[i].gameControl();
+  if(gameTimer < 30000) {
+    for(i = 0; i < 5; i++)
+    {
+      bugs[i].gameControl();
+    }
   }
+  
+  gameTimer += deltaTime;
 }
 
 function mousePressed() {
