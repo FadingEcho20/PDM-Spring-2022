@@ -85,12 +85,16 @@ function draw() {
         }
       }
     }
+    else
+      gameStatus = 2;
   
     textSize(32);
     text(numberKilled, 1800, 30);
     
     gameTimer += deltaTime;
   }
+  else if(gameStatus == 2)
+    gameOverMenu();
 }
 
 function mainMenu() {
@@ -99,6 +103,17 @@ function mainMenu() {
   rect(910, 450, 600, 100, 20);
   textSize(100);
   text('Start Game', 950, 540);
+}
+
+function gameOverMenu() {
+  textSize(200);
+  text('Game Over', 700, 300);
+  textSize(100);
+  text('Score:', 700, 400);
+  text(numberKilled, 1000, 400);
+  rect(910, 450, 600, 100, 20);
+  textSize(100);
+  text('Play Again', 950, 530);
 }
 
 function mousePressed() {
@@ -115,6 +130,26 @@ function mousePressed() {
         if(mouseY > (bugs[i].posY - CLICK_PRECISION) && mouseY < (bugs[i].posY + CLICK_PRECISION))
           bugs[i].kill();   
     }
+  }
+  else if(gameStatus == 2) {
+    if(mouseX > 910 && mouseX < 1510)
+      if(mouseY > 450 && mouseY < 550) {
+        gameStatus = 1;
+
+        gameTimer = 0;
+        numberKilled = 0;
+        RESPAWN_DELAY = 3000;
+        THINK_DELAY = 500;
+        CLICK_PRECISION = 50;
+        ACTION_DURATION = 1500;
+        FADE_RATE = 1;
+        BUG_MIN_SPEED = 1;
+        BUG_MAX_SPEED = 5;
+        for(i = 0; i < 20; i++)
+        {
+          bugs[i] = new Bug(random(200,1720), random(200,880));
+        }
+      }
   }
 }
 
@@ -134,8 +169,10 @@ class Bug {
     if(this.bugStatus == 0) {
       this.renderDead(this.bugStatus);
   
-      if(this.timeCounter >= RESPAWN_DELAY)
+      if(this.timeCounter >= RESPAWN_DELAY) {
         this.bugStatus = 1;
+        this.bugOpacity = 255;
+      }
       this.timeCounter += deltaTime;
     }
     else if(this.bugStatus == 1) {
