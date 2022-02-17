@@ -28,9 +28,9 @@ let CLICK_PRECISION; // number of pixels from the center of the bug to register 
 let RESPAWN_DELAY; // value in milliseconds for bug to respawn
 let currentPopulation; // current number of bugs on screen
 let BUG_MOVE_SPEED;
-let THINK_DELAY;
-let ACTION_DURATION;
-// let fadeSpeed; //rate at which bugs fade after being killed
+let THINK_DELAY; // time before bug decides to move a different direction
+let ACTION_DURATION; // time bug performs current instruction
+let FADE_RATE; // rate at which bug fades after being killed 
 
 function setup() {
   createCanvas(1920, 1080);
@@ -44,6 +44,7 @@ function setup() {
   CLICK_PRECISION = 50;
   BUG_MOVE_SPEED = 2;
   ACTION_DURATION = 1500;
+  FADE_RATE = 1;
   for(i = 0; i < 20; i++)
   {
     bugs[i] = new Bug(random(200,1720), random(200,880));
@@ -76,9 +77,10 @@ class Bug {
     this.spriteCurrentFrame = 0;
     this.beginCommandFrame;
     this.timeCounter = 0; 
+    this.bugOpacity = 255;
   }
 
-  gameControl() {
+  gameControl() { //all statements must use a render, move, and think
     if(this.bugStatus == 0) {
       this.renderDead(this.bugStatus);
   
@@ -95,64 +97,104 @@ class Bug {
     }
     else if(this.bugStatus == 3) {
       this.renderLive(this.bugStatus);
-  
-      if(frameCount % 6 == 0) {
-        this.spriteCurrentFrame++;
-      }
-
-      this.posY -= BUG_MOVE_SPEED;
-
-      if(this.timeCounter >= ACTION_DURATION) {
-        this.bugStatus = 1;
-        this.timeCounter = 0;
-      }
-      this.timeCounter += deltaTime;
+      this.move(this.bugStatus);
     }
     else if(this.bugStatus == 4) {
       this.renderLive(this.bugStatus);
-  
-      if(frameCount % 6 == 0) {
-        this.spriteCurrentFrame++;
-      }
-
-      this.posX -= BUG_MOVE_SPEED;
-
-      if(this.timeCounter >= ACTION_DURATION) {
-        this.bugStatus = 1;
-        this.timeCounter = 0;
-      }
-      this.timeCounter += deltaTime;
+      this.move(this.bugStatus);
     }
     else if(this.bugStatus == 5) {
       this.renderLive(this.bugStatus);
-  
-      if(frameCount % 6 == 0) {
-        this.spriteCurrentFrame++;
-      }
-
-      this.posY += BUG_MOVE_SPEED;
-
-      if(this.timeCounter >= ACTION_DURATION) {
-        this.bugStatus = 1;
-        this.timeCounter = 0;
-      }
-      this.timeCounter += deltaTime;
+      this.move(this.bugStatus);
     }
     else if(this.bugStatus == 6) {
       this.renderLive(this.bugStatus);
-  
-      if(frameCount % 6 == 0) {
-        this.spriteCurrentFrame++;
-      }
+      this.move(this.bugStatus);
 
-      this.posX += BUG_MOVE_SPEED;
-
-      if(this.timeCounter >= ACTION_DURATION) {
-        this.bugStatus = 1;
-        this.timeCounter = 0;
-      }
-      this.timeCounter += deltaTime;
     }
+  }
+
+  move(stat) {
+    switch (stat) {
+      case 3:
+        if(frameCount % 6 == 0) {
+          this.spriteCurrentFrame++;
+        }
+  
+        if(this.posY >= 100) {    
+          this.posY -= BUG_MOVE_SPEED;
+        }
+        else
+          this.bugStatus = 1;
+  
+        if(this.timeCounter >= ACTION_DURATION) {
+          this.bugStatus = 1;
+          this.timeCounter = 0;
+        }
+        this.timeCounter += deltaTime;
+        break;
+
+      case 4:
+        if(frameCount % 6 == 0) {
+          this.spriteCurrentFrame++;
+        }
+  
+        if(this.posX >= 100) {    
+          this.posX -= BUG_MOVE_SPEED;
+        }
+        else
+          this.bugStatus = 1;
+  
+        if(this.timeCounter >= ACTION_DURATION) {
+          this.bugStatus = 1;
+          this.timeCounter = 0;
+        }
+        this.timeCounter += deltaTime;
+        break;
+
+      case 5:
+        if(frameCount % 6 == 0) {
+          this.spriteCurrentFrame++;
+        }
+  
+        if(this.posY <= 980) {    
+          this.posY += BUG_MOVE_SPEED;
+        }
+        else
+          this.bugStatus = 1;
+  
+        if(this.timeCounter >= ACTION_DURATION) {
+          this.bugStatus = 1;
+          this.timeCounter = 0;
+        }
+        this.timeCounter += deltaTime;
+        break;
+
+      case 6:
+        if(frameCount % 6 == 0) {
+          this.spriteCurrentFrame++;
+        }
+  
+        if(this.posX <= 1820) {    
+          this.posX += BUG_MOVE_SPEED;
+        }
+        else
+          this.bugStatus = 1;
+  
+        if(this.timeCounter >= ACTION_DURATION) {
+          this.bugStatus = 1;
+          this.timeCounter = 0;
+        }
+        this.timeCounter += deltaTime;
+        break;
+
+      default:
+        return;
+    }
+  }
+
+  think() {
+    
   }
 
   renderLive() {
@@ -172,8 +214,12 @@ class Bug {
   }
 
   renderDead() {
+
+    if(this.timeCounter < RESPAWN_DELAY && this.bugOpacity > 0)
+      this.bugOpacity -= FADE_RATE * 5; 
     push();
     translate(-100, -100);
+    tint(255,this.bugOpacity);
     image(dead, this.posX, this.posY, 200, 200);
     pop();
   }
