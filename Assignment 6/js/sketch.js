@@ -13,10 +13,6 @@ function draw() {
   background(220);
 }
 
-// function playSound(whichSound) {
-//   sounds.player(whichSound).start();
-// }
-
 function keyPressed() {
   if(keyCode === 81)
     synth.triggerAttackRelease("C4", "8n");
