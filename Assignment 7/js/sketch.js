@@ -11,14 +11,20 @@ let ampEnv = new Tone.AmplitudeEnvelope({
 }).connect(pan);
 osc.connect(ampEnv);
 
+function preload() {
+  img = loadImage('./1s5vtryd7gl81.jpg');
+}
+
 function setup() {
   createCanvas(400, 400);
+  
 
   pitch = 440;
 }
 
 function draw() {
   background(220);
+  image(img,0,0,400,400);
 }
 
 function mousePressed() {
