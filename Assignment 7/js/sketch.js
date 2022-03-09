@@ -31,35 +31,39 @@ function draw() {
   background(220);
   image(img,0,0,400,400);
 
-  // if(!playEffect) {
-  //   if(noteNumber == 3) {
-  //     if(lastFramePlayed + 15 == frameCount) {
-  //       lastFramePlayed = frameCount;
-  //       synth.triggerAttackRelease(note[noteNumber], .25);
-  //       noteNumber = 0;
-  //     }
-  //   }
-  //   else {
-  //     if(noteNumber == 2) {
-  //       if(lastFramePlayed + 7 == frameCount) {
-  //         lastFramePlayed = frameCount;
-  //         synth.triggerAttackRelease(note[noteNumber], .125);
-  //         noteNumber++;
-  //       }
-  //     }
-  //     else {
-  //       if(lastFramePlayed + 15 == frameCount) {
-  //         lastFramePlayed = frameCount;
-  //         synth.triggerAttackRelease(note[noteNumber], .25);
-  //         noteNumber++;
-  //       }
-  //     }
-  //   }
-  // }
+  if(!playEffect) {
+    if(noteNumber == 3) {
+      if(lastFramePlayed + 15 == frameCount) {
+        lastFramePlayed = frameCount;
+        synth.triggerAttackRelease(note[noteNumber], .25);
+        noteNumber = 0;
+      }
+    }
+    else {
+      if(noteNumber == 2) {
+        if(lastFramePlayed + 7 == frameCount) {
+          lastFramePlayed = frameCount;
+          synth.triggerAttackRelease(note[noteNumber], .125);
+          noteNumber++;
+        }
+      }
+      else {
+        if(lastFramePlayed + 15 == frameCount) {
+          lastFramePlayed = frameCount;
+          synth.triggerAttackRelease(note[noteNumber], .25);
+          noteNumber++;
+        }
+      }
+    }
+  }
+  else {
+    if(frameCount > lastFramePlayed + 60)
+      playEffect = false;
+  }
 }
 
 function mousePressed() {
-  Tone.start();
-  // playEffect = true;
+  playEffect = true;
   phas.triggerAttackRelease(20, 1);
+  lastFramePlayed = frameCount;
 }
