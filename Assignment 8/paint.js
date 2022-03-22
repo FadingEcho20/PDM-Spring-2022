@@ -1,5 +1,10 @@
+//vars to control paint app
 var paintColor;
 var paintSize;
+//vars for music
+const synth = new Tone.Synth().toDestination();
+const bgMusic = ["C#5","C#5","G#4","G#4","A#4","A#4","F4","F4"];
+
 function setup() {
   createCanvas(1920, 1080);
   paintColor = color('black');
@@ -38,6 +43,7 @@ function draw() {
   ui();
   if(mouseIsPressed)
   {
+    synth.triggerAttackRelease("C4", "8n");
     print('mouse is pressed');
     if(mouseX < 50)
     {
