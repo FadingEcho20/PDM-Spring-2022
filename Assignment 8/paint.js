@@ -2,39 +2,41 @@
 var paintColor;
 var paintSize;
 //vars for music
-const autoFilter = new Tone.AutoFilter("4n").toDestination().start();
-const lead = new Tone.Synth().connect(autoFilter);
-const bass = new Tone.Synth().toDestination();
+var autoFilter = new Tone.AutoFilter(autoFilterFrequency).toDestination().start();
+var feedbackDelay = new Tone.FeedbackDelay(feedbackDelayTime, 0.50).connect(autoFilter)
+var chorus = new Tone.Chorus(chorusFrequency, 2.5, .2).connect(feedbackDelay);
+var lead = new Tone.Synth().connect(chorus);
 const leadSheet = ["A#3","C#4","D#4","A#4","F4","F#4","G#4","F#4","C#4","C#4","F4","F#4","D#4"];
-const leadHoldNoteFor = [1000,300,300,300,1000,500,800,1000,500,500,300,500,300,1000]
-const bassSheet = ["C#3","G#2","F#2"];
-const noteLengths = ["1n","2n","4n","8n","16n"];
-var bassTimePassed;
+const leadHoldNoteFor = [1000,300,300,300,800,500,800,800,500,500,300,500,300,2000]
 var leadTimePassed;
 var leadNoteIndex; 
-var bassNoteIndex;
-var bassLengthIndex;
 var leadLengthIndex;
 var leadHoldIndex;
+var autoFilterFrequency;
+var chorusFrequency;
+var feedbackDelayTime;
+
+
 //color pick sound effect
-const picker =  new Tone.PluckSynth().toDestination();
+var picker =  new Tone.PluckSynth().toDestination();
 
 
 function setup() {
   createCanvas(1920, 1080);
   paintColor = color('black');
   paintSize = 15;
-  bassTimePassed = 0;
   leadTimePassed = 0;
-  bassNoteIndex = 0;
   leadNoteIndex = 0;
   leadHoldIndex = 0;
+  autoFilterFrequency = 300;
+  feedbackDelayTime = 100;
+  
 }
 
 function draw() {
   ui();
-  bassLine();
   leadTrack();
+  effect();
   if(mouseIsPressed)
   {
     if(mouseX < 50)
@@ -69,7 +71,6 @@ function draw() {
       line(pmouseX, pmouseY, mouseX, mouseY);
     }
   }
-  bassTimePassed += deltaTime;
   leadTimePassed += deltaTime;
 }
 
@@ -155,8 +156,7 @@ function leadTrack() {
         break;
           
     }
-    // if(mouseIsPressed)s
-      lead.triggerAttackRelease(leadSheet[leadNoteIndex], "8n");
+    lead.triggerAttackRelease(leadSheet[leadNoteIndex], leadHoldNoteFor[leadHoldIndex]);
     leadNoteIndex++;
     leadHoldIndex++;
     if(leadNoteIndex == 13)
@@ -168,34 +168,16 @@ function leadTrack() {
 
 }
 
-//mainly controls sounds played by color selection
-function bassLine() {
-  if(bassTimePassed > 1000)
+function effect() {
+  if(mouseIsPressed)
   {
-    bassTimePassed = 0;
-    switch (bassNoteIndex)
-    {
-      case 0:
-        bassLengthIndex = 1;
-        break;
-      case 1:
-        bassLengthIndex = 1;
-        break;
-      case 2:
-        bassLengthIndex = 1;
-        break;
-      default: 
-        bassLengthIndex = 1;
-        break;
-    }
-    lead.triggerAttackRelease( bassSheet[bassNoteIndex], noteLengths[bassLengthIndex]);
-    bassNoteIndex++;
-    if(bassNoteIndex == 3)
-      bassNoteIndex = 0;
+    feedbackDelayTime = map(mouseX,0,width,0,1,true);
+    autoFilterFrequency = map(mouseY,0,1080,200,30000,true);
   }
 }
 
 function mouseClicked() {
+  feedbackDelayTime = 200;
   if(mouseX < 50)
     {
       if(mouseY < 50)
