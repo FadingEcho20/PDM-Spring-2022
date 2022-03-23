@@ -2,7 +2,8 @@
 var paintColor;
 var paintSize;
 //vars for music
-const lead = new Tone.Synth().toDestination();
+const autoFilter = new Tone.AutoFilter("4n").toDestination().start();
+const lead = new Tone.Synth().connect(autoFilter);
 const bass = new Tone.Synth().toDestination();
 const leadSheet = ["A#3","C#4","D#4","A#4","F4","F#4","G#4","F#4","C#4","C#4","F4","F#4","D#4"];
 const leadHoldNoteFor = [1000,300,300,300,1000,500,800,1000,500,500,300,500,300,1000]
@@ -17,6 +18,7 @@ var leadLengthIndex;
 var leadHoldIndex;
 //color pick sound effect
 const picker =  new Tone.PluckSynth().toDestination();
+
 
 function setup() {
   createCanvas(1920, 1080);
@@ -116,7 +118,7 @@ function leadTrack() {
         leadLengthIndex = 1;
         break;
       case 3:
-        leadLengthIndex = 1;
+        leadLengthIndex = 0;
         break;
       case 4:
         leadLengthIndex = 1;
@@ -125,7 +127,7 @@ function leadTrack() {
         leadLengthIndex = 1;
         break;
       case 5:
-        leadLengthIndex = 1;
+        leadLengthIndex = 0;
         break;
       case 7: 
       leadLengthIndex = 1;
@@ -153,7 +155,7 @@ function leadTrack() {
         break;
           
     }
-    if(mouseIsPressed)
+    // if(mouseIsPressed)s
       lead.triggerAttackRelease(leadSheet[leadNoteIndex], "8n");
     leadNoteIndex++;
     leadHoldIndex++;
